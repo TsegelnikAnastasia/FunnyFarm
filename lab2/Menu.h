@@ -21,9 +21,10 @@ private:
 	void LoadGame();
 	void ShowSettings();
 	void ShowAbout();
+
 	void ChangeDifficult();
-	void ChangeChickens();
-	void ChangeCows();
-	void ChangeHorses();
+	void ShowAnimals();
+	void ChangeAnimal(const string& name);
+	void AddAnimal();
 	void WaitForEnter();
 };
