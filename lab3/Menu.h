@@ -24,7 +24,7 @@ private:
 
 	void ChangeDifficult();
 	void ShowAnimals();
-	void ChangeAnimal(const string& name);
+	void ChangeAnimal(const string &name);
 	void AddAnimal();
 	void WaitForEnter();
 };

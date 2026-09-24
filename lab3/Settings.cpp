@@ -3,8 +3,8 @@
 Settings::Settings() {
 	Difficult = "Средний";
 	AvailableDifficulties = { "Лёгкий", "Средний", "Сложный" };
-	Animals["Курица"] = 5;
-	Animals["Корова"] = 3;
+	Animals["Курица"] = 1;
+	Animals["Корова"] = 1;
 	Animals["Лошадь"] = 1;
 }
 string Settings::getDifficult()const {
@@ -28,7 +28,7 @@ void Settings::setAnimalCount(const string& name, int count) {
 	}
 }
 void Settings::AddAnimal(const string& name, int count) {
-	Animals[name] = count;
+	Animals[name]=count;
 }
 bool Settings::HasAnimal(const string& name) const {
 	return Animals.find(name) != Animals.end();

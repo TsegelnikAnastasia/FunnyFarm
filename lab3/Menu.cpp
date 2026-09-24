@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "Game.h"
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -13,8 +14,8 @@ void Menu::WaitForEnter() {
     cin.get();
 }
 void Menu::run() {
-    while (true) {
-        cout << "Веселая Ферма" << endl;
+	while (true) {
+		cout << "Веселая Ферма" << endl;
         cout << "1. Начать игру" << endl;
         cout << "2. Загрузить игру" << endl;
         cout << "3. Настройки" << endl;
@@ -41,11 +42,12 @@ void Menu::run() {
             cout << "Неверный пункт меню.\n";
             break;
         }
-    }
+	}
 }
 void Menu::StartGame() {
     cout << "Игра началась!" << endl;
-    WaitForEnter();
+    Game game(settings);
+    game.run();
 }
 void Menu::LoadGame() {
     cout << "Функция на данный момент недоступна, появиться в ближайших обновлениях";
@@ -54,7 +56,7 @@ void Menu::LoadGame() {
 void Menu::ShowAbout() {
     cout << "---О программе---" << endl;
     cout << "--Веселая Ферма--" << endl;
-    cout << "Версия: " << VERSION << endl;
+    cout << "Версия: " <<  VERSION << endl;
     cout << AUTHOR << endl;
     WaitForEnter();
 }
@@ -112,14 +114,14 @@ void Menu::ChangeDifficult() {
 }
 
 void Menu::ShowAnimals() {
-
+    
     while (true) {
-        map<string, int>animals = settings.getAnimals();
-        if (animals.empty()) {
-            cout << "Список животных пуст." << endl;
-            WaitForEnter();
-            return;
-        }
+    map<string, int>animals = settings.getAnimals();
+    if (animals.empty()) {
+        cout << "Список животных пуст." << endl;
+        WaitForEnter();
+        return;
+    }
         cout << "== Животные ==" << endl;
         vector<string>names;
         int index = 1;
@@ -135,7 +137,7 @@ void Menu::ShowAnimals() {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число." << endl;
+            cout << "Ошибка ввода. Введите число."<<endl;
             continue;
         }
         if (choice >= 1 && choice <= names.size()) {
@@ -193,7 +195,7 @@ void Menu::AddAnimal() {
     if (cin.fail() || count < 0) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка ввода. Введите положительное число." << endl;
+        cout << "Ошибка ввода. Введите положительное число." <<endl;
         WaitForEnter();
         return;
     }
