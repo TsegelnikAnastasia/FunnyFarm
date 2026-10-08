@@ -14,7 +14,7 @@ public:
 	map<string, int>getFood()const;
 	void addMoney(int amount);
 	bool spendMoney(int amount);
-	void nextDay(int satietyLoss, int happinessLoss);
+	int nextDay(int satietyLoss, int happinessLoss);
 	void useAction();
 	bool hasActions()const;
 

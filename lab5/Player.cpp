@@ -48,13 +48,16 @@ void Player::useAction() {
 bool Player::hasActions() const {
     return actionsLeft > 0;
 }
-void Player::nextDay(int satietyLoss,int happinessLoss) {
+int Player::nextDay(int satietyLoss,int happinessLoss) {
     day++;
     for (Animal& animal : animals) {
         animal.decreaseSatiety(satietyLoss);
         animal.decreaseHappiness(happinessLoss);
     }
+    int before = animals.size();
     removeDeadAnimals();
+    int after = animals.size();
+    return before - after;
 }
 void Player::addAnimal(const Animal& animal) {
     animals.push_back(animal);

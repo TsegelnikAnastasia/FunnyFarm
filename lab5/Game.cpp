@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "ConsoleUI.h"
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -43,6 +44,7 @@ void Game::run(bool loadFromFile) {
     }
     saveManager.Start();
     while (true) {
+        ConsoleUI::Clear();
         if (player.getAnimals().empty()) {
             gameOver();
             saveManager.Stop();
@@ -141,18 +143,21 @@ void Game::startNewGame() {
     for (const string& food : foodTypes) player.addFood(food, 1);
 }
 void Game::showStatus() const {
-    cout << "\n=== День " << player.getDay() << " ===\n";
-    cout << "Деньги: " << player.getMoney() << "\n";
-    cout << "Действия: " << player.getActionsLeft() << "\n";
-    cout << "Животных: " << player.getAnimals().size() << "\n";
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("День: " + to_string(player.getDay())
+        + "  |  Деньги: " + to_string(player.getMoney())
+        + "  |  Действия: " + to_string(player.getActionsLeft())
+        + "  |  Животных: " + to_string(player.getAnimals().size()));
+    ConsoleUI::PrintSeparator();
 }
 void Game::showDayMenu() {
-    cout << "\n1. Покормить животное\n";
-    cout << "2. Купить животное\n";
-    cout << "3. Купить еду\n";
-    cout << "4. Лечь спать\n";
-    cout << "5. Сохранить игру\n";
-    cout << "6. Выйти в главное меню\n";
+    ConsoleUI::PrintLine("1. Покормить животное");
+    ConsoleUI::PrintLine("2. Купить животное");
+    ConsoleUI::PrintLine("3. Купить еду");
+    ConsoleUI::PrintLine("4. Лечь спать");
+    ConsoleUI::PrintLine("5. Сохранить игру");
+    ConsoleUI::PrintLine("6. Выйти в главное меню");
+    ConsoleUI::PrintSeparator();
     cout << "Выбор: ";
 }
 void Game::showAnimals() {
@@ -163,9 +168,11 @@ void Game::showAnimals() {
     }
     cout << "\n=== Ваши животные ===\n";
     for (int i = 0; i < animals.size(); i++) {
-        cout << (i + 1) << ". " << animals[i].getSpecies()
-            << " (сытость: " << animals[i].getSatiety() << ", счастье: " << animals[i].getHappiness()  <<  ")\n";
+        ConsoleUI::PrintLine(to_string(i + 1) + ". " + animals[i].getSpecies()
+            + " (сытость: " + to_string(animals[i].getSatiety())
+            + ", счастье: " + to_string(animals[i].getHappiness()) + ")");
     }
+    ConsoleUI::PrintSeparator();
 }
 int Game::getNutritionFor(const string& foodType) {
     if (foodType == "Трава")     return 15;
@@ -237,6 +244,10 @@ void Game::feedAnimal() {
     Animal updated = player.getAnimals()[animalChoice - 1];
     cout << updated.getSpecies() << " покормлен(а). Сытость: "
         << updated.getSatiety() << ", счастье: " << updated.getHappiness() << "\n";
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Нажмите Enter для продолжения...");
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 void Game::buyAnimal() {
     if (!player.hasActions()) {
@@ -282,6 +293,10 @@ void Game::buyAnimal() {
     player.addAnimal(createAnimal(species));
     player.useAction();
     cout << species << " куплена за " << price << " монет.\n";
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Нажмите Enter для продолжения...");
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 void Game::buyFood() {
     if (!player.hasActions()) {
@@ -332,9 +347,13 @@ void Game::buyFood() {
     player.useAction();
     cout << "Куплено " << amount << " порций " << foodType
         << " за " << totalPrice << " монет.\n";
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Нажмите Enter для продолжения...");
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 void Game::endDay() {
-    cout << "\n=== Завершение дня " << player.getDay() << " ===\n";
+    ConsoleUI::PrintHeader("ЗАВЕРШЕНИЕ ДНЯ " + to_string(player.getDay()));
     map<string, int>productCount;
     int totalIncome = 0;
 
@@ -352,40 +371,43 @@ void Game::endDay() {
         totalIncome += adpricecoaf;
     }
     if (!productCount.empty()) {
-        cout << "Продано: ";
+        string line = "Продано: ";
         bool first = true;
         for (auto& pair : productCount) {
-            if (!first) cout << ", ";
-            cout << pair.second << " " << pair.first;
+            if (!first) line += ", ";
+            line += to_string(pair.second) + " " + pair.first;
             first = false;
         }
-        cout << "." << endl;
+        line += ".";
+        ConsoleUI::PrintLine(line);
     }
-    else cout << "Продукции нет." << endl;
-    cout << "Доход: +" << totalIncome << " монет." << endl;
+    else {
+        ConsoleUI::PrintLine("Продукции нет.");
+    }
+    ConsoleUI::PrintLine("Доход: +" + to_string(totalIncome) + " монет.");
     player.addMoney(totalIncome);
 
-    player.nextDay(SATIETY_LOSS_PER_DAY,10);
-
-    int deadCount = 0;
-    for (const Animal& animal : player.getAnimals()) {
-        if (!animal.isAlive()) {
-            deadCount++;
-        }
-    }
+    int deadCount = player.nextDay(SATIETY_LOSS_PER_DAY,10);;
     if (deadCount > 0) {
-        cout << "Умерло животных: " << deadCount << "\n";
+        ConsoleUI::PrintLine("Умерло животных: " + to_string(deadCount));
     }
     player.setActions(ACTIONS_PER_DAY);
-    cout << "Наступил день " << player.getDay() << ".\n";
-    cout << "Действия на день: " << ACTIONS_PER_DAY << "\n";
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Наступил день " + to_string(player.getDay()) + ".");
+    ConsoleUI::PrintLine("Действия на день: " + to_string(ACTIONS_PER_DAY));
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Нажмите Enter для продолжения...");
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 void Game::gameOver() {
-    cout << "\n=== ИГРА ОКОНЧЕНА ===\n";
-    cout << "Все ваши животные погибли.\n";
-    cout << "Вы продержались: " << player.getDay()-1 << " дней.\n";
-    cout << "Денег осталось: " << player.getMoney() << "\n";
-    cout << "Нажмите Enter...";
+    ConsoleUI::Clear();
+    ConsoleUI::PrintHeader("ИГРА ОКОНЧЕНА");
+    ConsoleUI::PrintLine("Все ваши животные погибли.");
+    ConsoleUI::PrintLine("Вы продержались: " + to_string(player.getDay() - 1) + " дней.");
+    ConsoleUI::PrintLine("Денег осталось: " + to_string(player.getMoney()) + ".");
+    ConsoleUI::PrintSeparator();
+    ConsoleUI::PrintLine("Нажмите Enter для возврата в меню...");
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
 }

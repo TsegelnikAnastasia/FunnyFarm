@@ -1,5 +1,6 @@
 #include "Menu.h"
 #include "Game.h"
+#include "ConsoleUI.h"
 #include <iostream>
 #include <fstream>
 #include <limits>
@@ -16,12 +17,14 @@ void Menu::WaitForEnter() {
 }
 void Menu::run() {
 	while (true) {
-		cout << "Веселая Ферма" << endl;
-        cout << "1. Начать игру" << endl;
-        cout << "2. Загрузить игру" << endl;
-        cout << "3. Настройки" << endl;
-        cout << "4. О программе" << endl;
-        cout << "5. Выход" << endl;
+        ConsoleUI::Clear();
+        ConsoleUI::PrintHeader("ВЕСЁЛАЯ ФЕРМА");
+        ConsoleUI::PrintLine("1. Начать игру");
+        ConsoleUI::PrintLine("2. Загрузить игру");
+        ConsoleUI::PrintLine("3. Настройки");
+        ConsoleUI::PrintLine("4. О программе");
+        ConsoleUI::PrintLine("5. Выход");
+        ConsoleUI::PrintSeparator();
         cout << "Выбор: ";
         int choice;
         cin >> choice;
@@ -63,20 +66,23 @@ void Menu::LoadGame() {
     game.run(true);
 }
 void Menu::ShowAbout() {
-    cout << "---О программе---" << endl;
-    cout << "--Веселая Ферма--" << endl;
-    cout << "Версия: " <<  VERSION << endl;
-    cout << AUTHOR << endl;
+    ConsoleUI::Clear();
+    ConsoleUI::PrintHeader("О ПРОГРАММЕ");
+    ConsoleUI::PrintLine("Весёлая Ферма");
+    ConsoleUI::PrintLine("Версия: " + VERSION);
+    ConsoleUI::PrintLine("Автор: " + AUTHOR);
+    ConsoleUI::PrintSeparator();
     WaitForEnter();
 }
 void Menu::ShowSettings() {
     while (true) {
-        cout << "== Настройки == " << endl;
-        cout << "1. Уровень сложности (текущий: " << settings.getDifficult() << ")" << endl;
-        cout << "2. Животные " << endl;
-        cout << "3. Добавить животное" << endl;
-        cout << "4. Назад" << endl;
-        cout << "Ваш выбор:" << endl;
+        ConsoleUI::Clear();
+        ConsoleUI::PrintHeader("НАСТРОЙКИ");
+        ConsoleUI::PrintLine("1. Уровень сложности (" + settings.getDifficult() + ")");
+        ConsoleUI::PrintLine("2. Животные");
+        ConsoleUI::PrintLine("3. Добавить животное");
+        ConsoleUI::PrintLine("4. Назад");
+        ConsoleUI::PrintSeparator();
         int choice;
         cin >> choice;
         if (cin.fail()) {
@@ -98,12 +104,15 @@ void Menu::ShowSettings() {
 void Menu::ChangeDifficult() {
     const vector<string>& options = settings.getAvailableDifficulties();
     while (true) {
-        cout << "== Уровень сложности ==" << endl;
-        cout << "Текущий: " << settings.getDifficult() << endl;
+        ConsoleUI::Clear();
+        ConsoleUI::PrintHeader("УРОВЕНЬ СЛОЖНОСТИ");
+        ConsoleUI::PrintLine("Текущий: " + settings.getDifficult());
+        ConsoleUI::PrintSeparator();
         for (int i = 0; i < options.size(); i++) {
-            cout << i + 1 << ". " << options[i] << endl;
+            ConsoleUI::PrintLine(to_string(i + 1) + ". " + options[i]);
         }
-        cout << (options.size() + 1) << ". Назад" << endl;
+        ConsoleUI::PrintLine(to_string(options.size() + 1) + ". Назад");
+        ConsoleUI::PrintSeparator();
         cout << "Выбор : ";
         int choice;
         cin >> choice;
@@ -131,15 +140,16 @@ void Menu::ShowAnimals() {
         WaitForEnter();
         return;
     }
-        cout << "== Животные ==" << endl;
+        ConsoleUI::Clear();
+        ConsoleUI::PrintHeader("ЖИВОТНЫЕ");
         vector<string>names;
         int index = 1;
         for (auto& pair : animals) {
-            cout << index << ". " << pair.first << ": " << pair.second << "\n";
+            ConsoleUI::PrintLine(to_string(index) + ". " + pair.first + ": " + to_string(pair.second)); 
             names.push_back(pair.first);
             index++;
         }
-        cout << index << ". Назад" << endl;
+        ConsoleUI::PrintLine(to_string(index) + ". Назад");
         cout << "Выбор: ";
         int choice;
         cin >> choice;
@@ -161,9 +171,10 @@ void Menu::ShowAnimals() {
 void Menu::ChangeAnimal(const string& name) {
     const vector<int>options = { 1,2,3,5,10 };
     while (true) {
-        cout << endl << name << endl;
+        ConsoleUI::Clear();
+        ConsoleUI::PrintHeader(name);
         map <string, int>animals = settings.getAnimals();
-        cout << "Текущее: " << animals[name] << endl;
+        ConsoleUI::PrintLine("Текущее: " + to_string(animals[name]));
         for (int i = 0; i < options.size(); i++) {
             cout << (i + 1) << ". " << options[i] << endl;
         }
@@ -190,7 +201,8 @@ void Menu::ChangeAnimal(const string& name) {
 void Menu::AddAnimal() {
     string name;
     int count;
-    cout << "== Добавить животное ==" << endl;
+    ConsoleUI::Clear();
+    ConsoleUI::PrintHeader("ДОБАВИТЬ ЖИВОТНОЕ");
     cout << "Введите название животного: ";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, name);
