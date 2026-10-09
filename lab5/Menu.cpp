@@ -10,20 +10,14 @@ const string Menu::AUTHOR = "Анастасия Цегельник";
 Menu::Menu() {
     settings.LoadFromFile("settings.txt");
 }
-void Menu::WaitForEnter() {
-    cout << "Нажмите Enter для продолжения..." << endl;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-}
 void Menu::run() {
 	while (true) {
         ConsoleUI::Clear();
-        ConsoleUI::PrintHeader("ВЕСЁЛАЯ ФЕРМА");
-        ConsoleUI::PrintLine("1. Начать игру");
-        ConsoleUI::PrintLine("2. Загрузить игру");
-        ConsoleUI::PrintLine("3. Настройки");
-        ConsoleUI::PrintLine("4. О программе");
-        ConsoleUI::PrintLine("5. Выход");
+        ConsoleUI::PrintGreen("1. Начать игру");
+        ConsoleUI::PrintYellow("2. Загрузить игру");
+        ConsoleUI::PrintYellow("3. Настройки");
+        ConsoleUI::PrintYellow("4. О программе");
+        ConsoleUI::PrintRed("5. Выход");
         ConsoleUI::PrintSeparator();
         cout << "Выбор: ";
         int choice;
@@ -31,7 +25,9 @@ void Menu::run() {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число." << endl;
+            ConsoleUI::PrintRed("Ошибка ввода. Введите число.");
+            ConsoleUI::PrintRed("Нажмите Enter для продолжения...");
+            cin.get();
             continue;
         }
         switch (choice) {
@@ -57,7 +53,7 @@ void Menu::LoadGame() {
     ifstream test("save.txt");
     if (!test.is_open()) {
         cout << "\nСохранение не найдено.\n";
-        WaitForEnter();
+        ConsoleUI::WaitForEnter();
         return;
     }
     test.close();
@@ -68,27 +64,29 @@ void Menu::LoadGame() {
 void Menu::ShowAbout() {
     ConsoleUI::Clear();
     ConsoleUI::PrintHeader("О ПРОГРАММЕ");
-    ConsoleUI::PrintLine("Весёлая Ферма");
-    ConsoleUI::PrintLine("Версия: " + VERSION);
-    ConsoleUI::PrintLine("Автор: " + AUTHOR);
+    ConsoleUI::PrintCyan("Весёлая Ферма");
+    ConsoleUI::PrintCyan("Версия: " + VERSION);
+    ConsoleUI::PrintCyan("Автор: " + AUTHOR);
     ConsoleUI::PrintSeparator();
-    WaitForEnter();
+    ConsoleUI::WaitForEnter();
 }
 void Menu::ShowSettings() {
     while (true) {
         ConsoleUI::Clear();
         ConsoleUI::PrintHeader("НАСТРОЙКИ");
-        ConsoleUI::PrintLine("1. Уровень сложности (" + settings.getDifficult() + ")");
-        ConsoleUI::PrintLine("2. Животные");
-        ConsoleUI::PrintLine("3. Добавить животное");
-        ConsoleUI::PrintLine("4. Назад");
+        ConsoleUI::PrintCyan("1. Уровень сложности (" + settings.getDifficult() + ")");
+        ConsoleUI::PrintCyan("2. Животные");
+        ConsoleUI::PrintCyan("3. Добавить животное");
+        ConsoleUI::PrintCyan("4. Назад");
         ConsoleUI::PrintSeparator();
         int choice;
         cin >> choice;
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число.\n";
+            ConsoleUI::PrintRed("Ошибка ввода. Введите число.");
+            ConsoleUI::PrintRed("Нажмите Enter для продолжения...");
+            cin.get();
             continue;
         }
         switch (choice) {
@@ -106,12 +104,12 @@ void Menu::ChangeDifficult() {
     while (true) {
         ConsoleUI::Clear();
         ConsoleUI::PrintHeader("УРОВЕНЬ СЛОЖНОСТИ");
-        ConsoleUI::PrintLine("Текущий: " + settings.getDifficult());
+        ConsoleUI::PrintCyan("Текущий: " + settings.getDifficult());
         ConsoleUI::PrintSeparator();
         for (int i = 0; i < options.size(); i++) {
-            ConsoleUI::PrintLine(to_string(i + 1) + ". " + options[i]);
+            ConsoleUI::PrintCyan(to_string(i + 1) + ". " + options[i]);
         }
-        ConsoleUI::PrintLine(to_string(options.size() + 1) + ". Назад");
+        ConsoleUI::PrintCyan(to_string(options.size() + 1) + ". Назад");
         ConsoleUI::PrintSeparator();
         cout << "Выбор : ";
         int choice;
@@ -119,7 +117,9 @@ void Menu::ChangeDifficult() {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число." << endl;
+            ConsoleUI::PrintRed("Ошибка ввода. Введите число.");
+            ConsoleUI::PrintRed("Нажмите Enter для продолжения...");
+            cin.get();
             continue;
         }
         if (choice >= 1 && choice <= options.size()) {
@@ -137,7 +137,7 @@ void Menu::ShowAnimals() {
     map<string, int>animals = settings.getAnimals();
     if (animals.empty()) {
         cout << "Список животных пуст." << endl;
-        WaitForEnter();
+        ConsoleUI::WaitForEnter();
         return;
     }
         ConsoleUI::Clear();
@@ -145,18 +145,20 @@ void Menu::ShowAnimals() {
         vector<string>names;
         int index = 1;
         for (auto& pair : animals) {
-            ConsoleUI::PrintLine(to_string(index) + ". " + pair.first + ": " + to_string(pair.second)); 
+            ConsoleUI::PrintCyan(to_string(index) + ". " + pair.first + ": " + to_string(pair.second)); 
             names.push_back(pair.first);
             index++;
         }
-        ConsoleUI::PrintLine(to_string(index) + ". Назад");
+        ConsoleUI::PrintCyan(to_string(index) + ". Назад");
         cout << "Выбор: ";
         int choice;
         cin >> choice;
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число."<<endl;
+            ConsoleUI::PrintRed("Ошибка ввода. Введите число.");
+            ConsoleUI::PrintRed("Нажмите Enter для продолжения...");
+            cin.get();
             continue;
         }
         if (choice >= 1 && choice <= names.size()) {
@@ -174,7 +176,7 @@ void Menu::ChangeAnimal(const string& name) {
         ConsoleUI::Clear();
         ConsoleUI::PrintHeader(name);
         map <string, int>animals = settings.getAnimals();
-        ConsoleUI::PrintLine("Текущее: " + to_string(animals[name]));
+        ConsoleUI::PrintCyan("Текущее: " + to_string(animals[name]));
         for (int i = 0; i < options.size(); i++) {
             cout << (i + 1) << ". " << options[i] << endl;
         }
@@ -185,7 +187,9 @@ void Menu::ChangeAnimal(const string& name) {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Ошибка ввода. Введите число." << endl;
+            ConsoleUI::PrintRed("Ошибка ввода. Введите число.");
+            ConsoleUI::PrintRed("Нажмите Enter для продолжения...");
+            cin.get();
             continue;
         }
         if (choice >= 1 && choice <= options.size()) {
@@ -208,7 +212,7 @@ void Menu::AddAnimal() {
     getline(cin, name);
     if (settings.HasAnimal(name)) {
         cout << "Животное \"" << name << "\" уже существует." << endl;
-        WaitForEnter();
+        ConsoleUI::WaitForEnter();
         return;
     }
     cout << "Введите количество: ";
@@ -217,11 +221,11 @@ void Menu::AddAnimal() {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Ошибка ввода. Введите положительное число." <<endl;
-        WaitForEnter();
+        ConsoleUI::WaitForEnter();
         return;
     }
     settings.AddAnimal(name, count);
     settings.SaveToFile("settings.txt");
     cout << "Животное \"" << name << "\" добавлено с количеством " << count << endl;
-    WaitForEnter();
+    ConsoleUI::WaitForEnter();
 }
