@@ -254,6 +254,8 @@ void Game::buyAnimal() {
         return;
     }
     cout << "\n=== Купить животное ===\n";
+    ConsoleUI::PrintCyan("Денег: " + to_string(player.getMoney()));
+    ConsoleUI::PrintSeparator();
     vector<string> speciesList;
     int index = 1;
     for (auto& pair : shopPrices) {
@@ -299,6 +301,8 @@ void Game::buyFood() {
         return;
     }
     cout << "\n=== Купить еду ===\n";
+    ConsoleUI::PrintCyan("Денег: " + to_string(player.getMoney()));
+    ConsoleUI::PrintSeparator();
     for (int i = 0; i < foodTypes.size(); i++) {
         ConsoleUI::PrintYellow(to_string(i + 1) + ". " + foodTypes[i] + " (" + to_string(foodPrices[foodTypes[i]]) + " монет)");
     }
@@ -388,7 +392,7 @@ void Game::endDay() {
     ConsoleUI::PrintGreen("Наступил день " + to_string(player.getDay()) + ".");
     ConsoleUI::PrintGreen("Действия на день: " + to_string(ACTIONS_PER_DAY));
     ConsoleUI::PrintSeparator();
-    ConsoleUI::WaitForEnter();
+    if (!player.getAnimals().empty()) ConsoleUI::WaitForEnter();
 }
 void Game::gameOver() {
     ConsoleUI::Clear();
